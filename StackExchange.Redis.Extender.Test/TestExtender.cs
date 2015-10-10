@@ -15,7 +15,7 @@ namespace StackExchange.Redis.Extender.Test
         [TestInitialize]
         public void Initialize()
         {
-            connectionRedis = ConnectionMultiplexer.Connect("pub-redis-13919.us-east-1-2.5.ec2.garantiadata.com:13919,password=salamandraverde");
+            connectionRedis = ConnectionMultiplexer.Connect("localhost:13919,password=senhadoredis");
 
             customer = new Customer();
             customer.Id = 12;
@@ -73,11 +73,32 @@ namespace StackExchange.Redis.Extender.Test
         }
 
         [TestMethod]
+        public void TestGetSet()
+        {
+            //set Customer
+            IDatabase database = connectionRedis.GetDatabase();
+            database.Set("customer:" + customer.Id, customer);
+            //get Customer
+            Customer customerGet = database.Get<Customer>("customer:" + customer.Id);
+            Assert.AreEqual(customer.ToString(), customerGet.ToString());
+            //create a New Customer
+            Customer newCustomer = new Customer();
+            newCustomer.Id = 13;
+            newCustomer.Age = 25;
+            newCustomer.Name = "New Customer";
+            //set New Customer and get Old Customer
+            customerGet = database.GetSet<Customer>("customer:" + customer.Id, newCustomer);
+            Assert.AreEqual(customer.ToString(), customerGet.ToString());
+            //get New Customer
+            customerGet = database.Get<Customer>("customer:" + customer.Id);
+            Assert.AreEqual(newCustomer.ToString(), customerGet.ToString());
+        }
+
+        [TestMethod]
         public async Task TestSetAsync()
         {
             IDatabase database = connectionRedis.GetDatabase();
             Task<bool> x = database.SetAsync("customer:" + customer.Id, customer);
-            Thread.Sleep(100);
             bool b = await x;
             Assert.IsTrue(b);
         }
@@ -88,7 +109,6 @@ namespace StackExchange.Redis.Extender.Test
             IDatabase database = connectionRedis.GetDatabase();
             bool b = await database.SetAsync("customerexpiry:" + customer.Id, customer, TimeSpan.FromSeconds(120));
             Assert.IsTrue(b);
-
             TimeSpan? timeExpiry = database.KeyTimeToLive("customerexpiry:" + customer.Id);
             Assert.AreEqual(timeExpiry.Value.TotalSeconds, 120, 5);
         }
