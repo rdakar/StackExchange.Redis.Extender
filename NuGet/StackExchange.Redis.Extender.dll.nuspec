@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>StackExchange.Redis.Extender</id>
+        <version>1.0.0</version>
+        <authors>romulo.cianci</authors>
+        <owners>romulo.cianci</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Extender for StackExchange.Redis</description>
+        <releaseNotes />
+        <copyright>Copyright 2015</copyright>
+        <tags>StackExchange Redis Extender Cache</tags>
+        <dependencies>
+            <dependency id="StackExchange.Redis" version="1.0.481" />
+            <dependency id="Newtonsoft.Json" version="7.0.1" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="Newtonsoft.Json.dll" target="lib\Newtonsoft.Json.dll" />
+        <file src="Newtonsoft.Json.xml" target="lib\Newtonsoft.Json.xml" />
+        <file src="StackExchange.Redis.dll" target="lib\StackExchange.Redis.dll" />
+        <file src="StackExchange.Redis.Extender.dll" target="lib\StackExchange.Redis.Extender.dll" />
+        <file src="StackExchange.Redis.Extender.pdb" target="lib\StackExchange.Redis.Extender.pdb" />
+        <file src="StackExchange.Redis.pdb" target="lib\StackExchange.Redis.pdb" />
+        <file src="StackExchange.Redis.xml" target="lib\StackExchange.Redis.xml" />
+    </files>
+</package>

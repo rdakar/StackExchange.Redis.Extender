@@ -90,6 +90,29 @@ namespace StackExchange.Redis.Extender
             return await cache.SetRemoveAsync(key, ToJson(value));
         }
 
+        public static bool HashSet(this IDatabase cache, string key, string hashName, object hashValue)
+        {
+            return cache.HashSet(key, hashName, ToJson(hashValue));
+        }
+
+        public static T HashGet<T>(this IDatabase cache, string key, string hashName)
+        {
+            return FromJson<T>(cache.HashGet(key, hashName));
+        }
+
+        public static IDictionary<string, T> HashGetAll<T>(this IDatabase cache, string key)
+        {
+            var hashes = cache.HashGetAll(key);
+            IDictionary<string, T> result = new Dictionary<string, T>();
+
+            foreach (var hash in hashes)
+            {
+                result.Add(hash.Name, FromJson<T>((hash.Value)));
+            }
+
+            return result;
+        }
+
         private static string ToJson(object value)
         {
             return JsonConvert.SerializeObject(value);

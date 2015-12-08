@@ -112,5 +112,35 @@ namespace StackExchange.Redis.Extender.Test
             TimeSpan? timeExpiry = database.KeyTimeToLive("customerexpiry:" + customer.Id);
             Assert.AreEqual(timeExpiry.Value.TotalSeconds, 120, 5);
         }
+
+        [TestMethod]
+        public void TestSetHash()
+        {
+            IDatabase database = connectionRedis.GetDatabase();
+            Assert.IsTrue(database.HashSet("customer", customer.Id.ToString(), customer));
+            database.HashDelete("customer", customer.Id.ToString());
+        }
+
+        [TestMethod]
+        public void TestHashGet()
+        {
+            IDatabase database = connectionRedis.GetDatabase();
+            database.HashSet("customer", customer.Id.ToString(), customer);
+            Customer customerGet = database.HashGet<Customer>("customer", customer.Id.ToString());
+            Assert.AreEqual(customer.ToString(), customerGet.ToString());
+            database.HashDelete("customer", customer.Id.ToString());
+        }
+
+        [TestMethod]
+        public void TestHashGetAll()
+        {
+            IDatabase database = connectionRedis.GetDatabase();
+            database.HashSet("customer", customer.Id.ToString(), customer);
+            var allHashes = database.HashGetAll<Customer>("customer");
+            Customer customerGet = null;
+            allHashes.TryGetValue("12", out customerGet);
+            Assert.AreEqual(customer.ToString(), customerGet.ToString());
+            database.HashDelete("customer", customer.Id.ToString());
+        }
     }
 }
